@@ -1,6 +1,6 @@
 import { initializeApp, cert } from 'firebase-admin/app';
+import admin from 'firebase-admin';
 import { getFirestore, CollectionReference, DocumentData } from 'firebase-admin/firestore';
-import { Firestore } from '@google-cloud/firestore';
 import { Logger } from "@slack/bolt";
 
 export interface DBService {
@@ -45,28 +45,32 @@ class FirebaseDBService implements DBService {
     try {
       const id = data.id;
       if (!id) {
-        throw Error(`DBFirebaseService.upsert() id not defined: data=${JSON.stringify(data)}`);
+        throw new Error(`DBFirebaseService.upsert() id not defined: data=${JSON.stringify(data)}`);
       }
+
+      data.timestamp = admin.firestore.FieldValue.serverTimestamp();
       const result = await this.todos.doc().set(data, {merge: true});
       this.logger.debug(result);
       return {
         status: DBServiceStatus.OK
       };
-    } catch (err) {
+    } catch (err: any) {
+      this.logger.error(err);
+
       return {
         status: DBServiceStatus.FAILED,
-        error: JSON.stringify(err)
+        error: err.message
       };
     }
   }
 
   public async listByStatus(value: string): Promise<DocumentData[]> {
-    const dataSet = await this.todos.where("status", "==", value).get();
+    const dataSet = await this.todos.where("status", "==", value).orderBy("timestamp").get();
     return dataSet.docs;
   }
 
   public async list(): Promise<DocumentData[]> {
-    const dataSet = await this.todos.get();
+    const dataSet = await this.todos.orderBy("timestamp").get();
     return dataSet.docs;
   }
 

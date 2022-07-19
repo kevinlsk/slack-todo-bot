@@ -1,7 +1,6 @@
 import { Logger } from "@slack/bolt";
 import { DBServiceCreate, DBService } from "./DBService";
 import shortUUID from "short-uuid";
-import { database } from "firebase-admin";
 
 export interface TodoService {
   add(content: string): Promise<TodoResult>;
@@ -52,7 +51,8 @@ class PersistentTodoService {
 
   async add(content: string): Promise<TodoResult> {
     this.logger.debug(`TodoService.add(): content=${content}`);
-    const todoItem: TodoItemFragment = {
+    const todoItem: TodoItem = {
+      id: shortUUID.generate(),
       content: content,
       status: TodoItemStatus.OPEN
     };
