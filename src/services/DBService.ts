@@ -4,7 +4,8 @@ import { getFirestore, CollectionReference, DocumentData } from 'firebase-admin/
 import { Logger } from "@slack/bolt";
 
 export interface DBService {
-  upsert(data: any): Promise<DBServiceResult>;
+  insert(id: string, data: any): Promise<DBServiceResult>;
+  update(id: string, data: any): Promise<DBServiceResult>;
   list(): Promise<any[]>;
   listByStatus(value: string): Promise<any[]>;
   deleteById(id: string): Promise<DBServiceResult>;
@@ -41,15 +42,36 @@ class FirebaseDBService implements DBService {
     this.todos = db.collection('users').doc(user).collection('todos');
   }
 
-  public async upsert(data: any): Promise<DBServiceResult> {
+  public async insert(id: string, data: any): Promise<DBServiceResult> {
     try {
-      const id = data.id;
-      if (!id) {
-        throw new Error(`DBFirebaseService.upsert() id not defined: data=${JSON.stringify(data)}`);
+      if (id.length == 0) {
+        throw new Error(`DBFirebaseService.insert() id not defined: data=${JSON.stringify(data)}`);
       }
 
       data.timestamp = admin.firestore.FieldValue.serverTimestamp();
-      const result = await this.todos.doc(id).set(data, {merge: true});
+      const result = await this.todos.doc(id).set(data);
+      this.logger.debug(result);
+      return {
+        status: DBServiceStatus.OK
+      };
+    } catch (err: any) {
+      this.logger.error(err);
+
+      return {
+        status: DBServiceStatus.FAILED,
+        error: err.message
+      };
+    }
+  }
+
+  public async update(id: string, data: any): Promise<DBServiceResult> {
+    try {
+      if (id.length == 0) {
+        throw new Error(`DBFirebaseService.update() id not defined: data=${JSON.stringify(data)}`);
+      }
+
+      data.timestamp = admin.firestore.FieldValue.serverTimestamp();
+      const result = await this.todos.doc(id).update(data);
       this.logger.debug(result);
       return {
         status: DBServiceStatus.OK

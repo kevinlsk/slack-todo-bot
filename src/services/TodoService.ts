@@ -15,11 +15,11 @@ export function TodoServiceCreate(user: string, logger: Logger) {
 
 export interface TodoItem {
   id: string,
-  content?: string,
-  status?: TodoItemStatus,
+  content: string,
+  status: TodoItemStatus,
 }
 
-export type TodoItemFragment = Omit<TodoItem, 'id'>;
+export type TodoItemFragment = Partial<Omit<TodoItem, 'id'>>;
 
 export enum TodoItemStatus {
   DONE = "done",
@@ -51,13 +51,12 @@ class PersistentTodoService {
 
   async add(content: string): Promise<TodoResult> {
     this.logger.debug(`TodoService.add(): content=${content}`);
-    const todoItem: TodoItem = {
-      id: shortUUID.generate(),
+    const fragment: TodoItemFragment = {
       content: content,
       status: TodoItemStatus.OPEN
     };
 
-    await this.dbService.upsert(todoItem);
+    await this.dbService.insert(shortUUID.generate(), fragment);
 
     return {
       status: TodoResultStatus.OK
@@ -65,14 +64,9 @@ class PersistentTodoService {
   }
 
   async update(id: string, fragment: TodoItemFragment): Promise<TodoResult> {
-    const todoItem: TodoItem = {
-      id: id,
-      ...fragment
-    };
+    this.logger.debug(`TodoService.update(): id=${id}, fragment=${fragment}`);
 
-    this.logger.debug(`TodoService.update(): todoItem=${todoItem}`);
-
-    await this.dbService.upsert(todoItem);
+    await this.dbService.update(id, fragment);
 
     return {
       status: TodoResultStatus.OK
