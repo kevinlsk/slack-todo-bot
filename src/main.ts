@@ -1,7 +1,7 @@
 import { App, LogLevel } from '@slack/bolt';
-import { TodoHomeViewAppHomeOpenedCallback, TodoHomeViewAddButtonActionID, TodoHomeViewCheckboxActionCallback, TodoHomeViewAddModelSubmissionCallback, TodoHomeViewAddButtonActionCallback, TodoHomeViewAddModalCallbackID } from 'views/TodoHomeView';
+import { TodoHomeMiddleware } from 'middlewares/TodoHomeMiddleware';
 import { TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
-import { TodoCommandInteractiveAddModalCallbackID, TodoCommandAddModalSubmissionCallback, TodoCommandInteractiveAddCallback, TodoCommandListCallback, TodoCommandListCheckboxActionID, TodoCommandListCheckboxActionCallback, TodoCommandListAddButtonActionID, TodoCommandListAddButtonActionCallback, TodoCommandListAddModalCallbackID } from 'commands/TodoCommandCallbacks';
+import { TodoCommandMiddleware } from 'middlewares/TodoCommandMiddleware';
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -13,26 +13,29 @@ const app = new App({
 /**********************************************
  * App Home routes
  **********************************************/
- app.event('app_home_opened', TodoHomeViewAppHomeOpenedCallback);
-app.action(/^TodoHomeViewCheckboxActionID-.+$/, TodoHomeViewCheckboxActionCallback);
-app.action(TodoHomeViewAddButtonActionID, TodoHomeViewAddButtonActionCallback);
+ const todoHomeMiddleware = new TodoHomeMiddleware();
+
+app.event('app_home_opened', todoHomeMiddleware.appHomeOpenedCallback);
+app.action(new RegExp(`^${TodoHomeMiddleware.CheckboxID}-.+$`), todoHomeMiddleware.checkboxActionCallback);
+app.action(TodoHomeMiddleware.AddButtonID, todoHomeMiddleware.addButtonActionCallback);
 
 // Instead of listening for 'view_submission', listen for 'callback_id' which is defined during modal creation
 // https://github.com/slackapi/bolt-js/issues/551
-app.view(TodoHomeViewAddModalCallbackID, TodoHomeViewAddModelSubmissionCallback);
+app.view(TodoHomeMiddleware.ModalSubmissionID, todoHomeMiddleware.modelSubmissionCallback);
 
 
 /***********************************************
  * Slack interative commands
  ***********************************************/
-// Add a new TODO in interactive mode
-app.command('/todo-i', TodoCommandInteractiveAddCallback);
-app.view(TodoCommandInteractiveAddModalCallbackID, TodoCommandAddModalSubmissionCallback);
+const commandMiddleware = new TodoCommandMiddleware();
 
-app.command('/todo-list', TodoCommandListCallback);
-app.action(/^TodoCommandListCheckboxActionID-.+$/, TodoCommandListCheckboxActionCallback);
-app.action(TodoCommandListAddButtonActionID, TodoCommandListAddButtonActionCallback);
-app.view(TodoCommandListAddModalCallbackID, TodoCommandAddModalSubmissionCallback);
+// Add a new TODO in interactive mode
+app.command('/todo-i', commandMiddleware.interactiveAddCallback);
+
+app.command('/todo-list', commandMiddleware.listCallback);
+app.action(new RegExp(`^${TodoCommandMiddleware.ModalCheckboxID}-.+$`), commandMiddleware.checkboxActionCallback);
+app.action(TodoCommandMiddleware.ModalAddButtonID, commandMiddleware.addButtonActionCallback);
+app.view(TodoCommandMiddleware.ModalSubmissionID, commandMiddleware.modalSubmissionCallback);
 
 
 /************************************************
