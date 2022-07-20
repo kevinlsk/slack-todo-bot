@@ -1,6 +1,5 @@
 import { App, LogLevel } from '@slack/bolt';
 import { TodoHomeMiddleware } from 'middlewares/TodoHomeMiddleware';
-import { TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
 import { TodoCommandMiddleware } from 'middlewares/TodoCommandMiddleware';
 
 const app = new App({

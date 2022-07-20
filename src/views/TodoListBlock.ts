@@ -1,4 +1,4 @@
-import { ActionsBlock, Checkboxes, Logger, MrkdwnOption, Option, PlainTextElement, SectionBlock } from '@slack/bolt';
+import { ActionsBlock, Checkboxes, Logger, MrkdwnOption, Option, SectionBlock } from '@slack/bolt';
 import { TodoItem, TodoItemFragment, TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
 
 export function TodoListBlock(todos: Array<TodoItem>, actionID: string): ActionsBlock | SectionBlock {
