@@ -61,7 +61,7 @@
 You can use this slack bot with Slack commands in any channel or message. Supported Slack commands are:
 - /todo-i
 - /todo-add
-- /todo-list &lt all | open | done &gt
+- /todo-list <all | open | done>
 - /todo-done TODO_ITEM_ID
 - /todo-delete TODO_ITEM_ID
 
