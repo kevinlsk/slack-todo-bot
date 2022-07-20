@@ -72,5 +72,5 @@ Alternatively, you can use it from "App Home". Just select "slack-todo-bot" in t
 - [ ] Cannot re-open a completed TODO item
 - [ ] Cannot edit the content of TODO item
 - [ ] Cannot delete the TODO item with UI, though you can delete with command /todo-delete
-- [ ] Slack limits number of checkboxes to 10 at a time, the workaround right now is to group 10 checkboxes as an element,
- but that caused an extra line spacing between the groups.
+- [ ] Slack limits the number of checkboxes to 10 at a time, the workaround right now is to group 10 checkboxes as an element,
+ but that causes an extra line spacing between the groups.
