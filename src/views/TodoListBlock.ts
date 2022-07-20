@@ -1,7 +1,15 @@
-import { ActionsBlock, SectionBlock, Checkboxes, PlainTextOption, MrkdwnOption } from '@slack/bolt';
-import { TodoItem, TodoItemStatus } from 'services/TodoService';
+import { ActionsBlock, Checkboxes, Logger, MrkdwnOption, Option, PlainTextElement, SectionBlock } from '@slack/bolt';
+import { TodoItem, TodoItemFragment, TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
 
-export function TodoListBlock(todos: Array<TodoItem>, actionID: string): ActionsBlock {
+export function TodoListBlock(todos: Array<TodoItem>, actionID: string): ActionsBlock | SectionBlock {
+  const placeholder: SectionBlock = {
+    type: 'section',
+    text: {
+      type: 'plain_text',
+      text: ' '
+    },
+  };
+
   let action: ActionsBlock = {
     type: 'actions',
     elements: [],
@@ -52,5 +60,14 @@ export function TodoListBlock(todos: Array<TodoItem>, actionID: string): Actions
     action.elements.push(checkboxes);
   }
 
-  return action;
+  // If there is no existing TODO items, return a placeholder to Slack to avoid exception.
+  return action.elements.length > 0 ? action : placeholder;
+}
+
+export async function TodoListBlockUpdateItems(userID: string, selectedOptions: Option[], logger: Logger, fragment: TodoItemFragment) {
+  const todoService = TodoServiceCreate(userID, logger);
+  const nonCompleteItems = selectedOptions.filter(v => !v.text.text.match(/^~/));
+  nonCompleteItems.forEach(async v => {
+    await todoService.update(v.value!, fragment);
+  });
 }

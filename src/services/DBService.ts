@@ -49,7 +49,7 @@ class FirebaseDBService implements DBService {
       }
 
       data.timestamp = admin.firestore.FieldValue.serverTimestamp();
-      const result = await this.todos.doc().set(data, {merge: true});
+      const result = await this.todos.doc(id).set(data, {merge: true});
       this.logger.debug(result);
       return {
         status: DBServiceStatus.OK
