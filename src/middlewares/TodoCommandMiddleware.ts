@@ -99,7 +99,7 @@ export class TodoCommandMiddleware {
 
     const todo = TodoServiceCreate(props.command.user_id, props.logger);
 
-    // Convert the text into one of the TodoItemStatus enum, default to OPEN if invalid
+    // Convert the text into one of the TodoItemStatus enum, default to ALL if invalid
     const status: TodoItemStatus = stringToEnum<TodoItemStatus>(TodoItemStatus, props.command.text, TodoItemStatus.ALL);
     const todos = (await todo.list(status)).data ?? []
 
