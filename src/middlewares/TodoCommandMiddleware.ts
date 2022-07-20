@@ -1,7 +1,7 @@
 import { SlackCommandMiddlewareArgs, AllMiddlewareArgs, SlackViewMiddlewareArgs, SlackViewAction, RespondArguments, SlackActionMiddlewareArgs, SlackAction, CheckboxesAction, BlockAction } from '@slack/bolt';
 import { TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
 import { stringToEnum } from 'utils/enum';
-import { TodoAddModalViewShow, TodoAddModalViewTextInputActionID, TodoAddModalViewTextInputBlockID, TodoAddModelViewSubmissionHelper } from 'views/TodoAddModal';
+import { TodoAddModalViewShow, TodoAddModalViewTextInputActionID, TodoAddModalViewTextInputBlockID, TodoAddModelViewSubmissionHelper } from 'views/TodoAddModalView';
 import { TodoListBlock, TodoListBlockUpdateItems } from 'views/TodoListBlock';
 import { TodoSectionAddBlock } from 'views/TodoSectionAddBlock';
 

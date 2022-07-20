@@ -2,7 +2,7 @@
 import { BlockAction, SlackAction, SlackEventMiddlewareArgs, SlackActionMiddlewareArgs, AllMiddlewareArgs, SlackViewAction, SlackViewMiddlewareArgs, CheckboxesAction } from '@slack/bolt';
 import { TodoListBlockUpdateItems } from 'views/TodoListBlock';
 import { TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
-import { TodoAddModalViewTextInputBlockID, TodoAddModalViewTextInputActionID, TodoAddModelViewSubmissionHelper, TodoAddModalViewShow } from 'views/TodoAddModal';
+import { TodoAddModalViewTextInputBlockID, TodoAddModalViewTextInputActionID, TodoAddModelViewSubmissionHelper, TodoAddModalViewShow } from 'views/TodoAddModalView';
 import { WebClient } from '@slack/web-api';
 import { Logger } from '@slack/bolt';
 import { TodoHomeView } from 'views/TodoHomeView';
