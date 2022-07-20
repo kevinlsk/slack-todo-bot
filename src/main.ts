@@ -30,7 +30,7 @@ app.view(TodoHomeMiddleware.ModalSubmissionID, todoHomeMiddleware.modelSubmissio
 const commandMiddleware = new TodoCommandMiddleware();
 
 // Add a new TODO in interactive mode
-app.command('/todo-i', commandMiddleware.interactiveAddCallback);
+app.command('/todo-i', commandMiddleware.commandInteractiveAddCallback);
 
 app.command('/todo-list', commandMiddleware.listCallback);
 app.action(new RegExp(`^${TodoCommandMiddleware.ModalCheckboxID}-.+$`), commandMiddleware.checkboxActionCallback);
@@ -41,53 +41,9 @@ app.view(TodoCommandMiddleware.ModalSubmissionID, commandMiddleware.modalSubmiss
 /************************************************
  * Slack commands
  ************************************************/
-app.command('/todo-add', async ({ command, ack, body, logger, client }) => {
-  await ack();
-  logger.debug(`/todo-add callback`);
-
-  let content = command.text;
-  if (content.length == 0) {
-    logger.debug(`/todo-add callback, empty content, return`);
-    return;
-  }
-
-  const todo = TodoServiceCreate(command.user_id, logger);
-  const result = await todo.add(content);
-
-  logger.debug(JSON.stringify(result));
-});
-
-app.command('/todo-delete', async ({ command, ack, logger }) => {
-  await ack();
-  logger.debug(`/todo-delete callback`);
-
-  let itemID = command.text;
-  if (itemID.length == 0) {
-    logger.debug(`/todo-delete callback, empty item ID, return`);
-    return;
-  }
-
-  const todo = TodoServiceCreate(command.user_id, logger);
-  const result = await todo.delete(itemID);
-
-  logger.debug(JSON.stringify(result));
-});
-
-app.command('/todo-done', async ({ command, ack, logger }) => {
-  await ack();
-  logger.debug(`/todo-done callback`);
-
-  let itemID = command.text;
-  if (itemID.length == 0) {
-    logger.debug(`/todo-done callback, empty item ID, return`);
-    return;
-  }
-
-  const todo = TodoServiceCreate(command.user_id, logger);
-  const result = await todo.update(itemID, { status: TodoItemStatus.DONE });
-
-  logger.debug(JSON.stringify(result));
-});
+app.command('/todo-add', commandMiddleware.commandAddCallback);
+app.command('/todo-delete', commandMiddleware.commandDeleteCallback);
+app.command('/todo-done', commandMiddleware.commandDoneCallback);
 
 
 /*******************************************
