@@ -2,7 +2,7 @@
 import { BlockAction, SlackAction, SlackEventMiddlewareArgs, SlackActionMiddlewareArgs, AllMiddlewareArgs, SlackViewAction, SlackViewMiddlewareArgs, CheckboxesAction } from '@slack/bolt';
 import { TodoListBlockUpdateItems } from 'views/TodoListBlock';
 import { TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
-import { TodoAddModalTextInputBlockID, TodoAddModalTextInputActionID, TodoAddModelSubmissionHelper, TodoAddModalShow } from 'views/TodoAddModal';
+import { TodoAddModalViewTextInputBlockID, TodoAddModalViewTextInputActionID, TodoAddModelViewSubmissionHelper, TodoAddModalViewShow } from 'views/TodoAddModal';
 import { WebClient } from '@slack/web-api';
 import { Logger } from '@slack/bolt';
 import { TodoHomeView } from 'views/TodoHomeView';
@@ -34,15 +34,15 @@ export class TodoHomeMiddleware {
     props.logger.debug(`TodoHomeViewAddButtonActionCallback() called`);
 
     const triggerID = (props.body as BlockAction).trigger_id;
-    await TodoAddModalShow(triggerID, TodoHomeMiddleware.ModalSubmissionID, props.client);
+    await TodoAddModalViewShow(triggerID, TodoHomeMiddleware.ModalSubmissionID, props.client);
   }
 
   async modelSubmissionCallback(props: SlackViewMiddlewareArgs<SlackViewAction> & AllMiddlewareArgs) {
     await props.ack();
     props.logger.debug(`TodoHomeViewAddModelSubmissionCallback() called`);
 
-    const content = props.body.view.state.values[TodoAddModalTextInputBlockID][TodoAddModalTextInputActionID].value!;
-    await TodoAddModelSubmissionHelper(props.body.user.id, content, props.logger);
+    const content = props.body.view.state.values[TodoAddModalViewTextInputBlockID][TodoAddModalViewTextInputActionID].value!;
+    await TodoAddModelViewSubmissionHelper(props.body.user.id, content, props.logger);
     await viewRefresh(props.body.user.id, props.client, props.logger);
   }
 }

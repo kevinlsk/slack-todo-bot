@@ -1,7 +1,7 @@
 import { SlackCommandMiddlewareArgs, AllMiddlewareArgs, SlackViewMiddlewareArgs, SlackViewAction, RespondArguments, SlackActionMiddlewareArgs, SlackAction, CheckboxesAction, BlockAction } from '@slack/bolt';
 import { TodoItemStatus, TodoServiceCreate } from 'services/TodoService';
 import { stringToEnum } from 'utils/enum';
-import { TodoAddModalShow, TodoAddModalTextInputActionID, TodoAddModalTextInputBlockID, TodoAddModelSubmissionHelper } from 'views/TodoAddModal';
+import { TodoAddModalViewShow, TodoAddModalViewTextInputActionID, TodoAddModalViewTextInputBlockID, TodoAddModelViewSubmissionHelper } from 'views/TodoAddModal';
 import { TodoListBlock, TodoListBlockUpdateItems } from 'views/TodoListBlock';
 import { TodoSectionAddBlock } from 'views/TodoSectionAddBlock';
 
@@ -25,7 +25,7 @@ export class TodoCommandMiddleware {
     props.ack();
     props.logger.debug(`TodoCommandMiddleware.commandInteractiveAddCallback()`);
 
-    TodoAddModalShow(props.command.trigger_id, TodoCommandMiddleware.ModalSubmissionID, props.client);
+    TodoAddModalViewShow(props.command.trigger_id, TodoCommandMiddleware.ModalSubmissionID, props.client);
   }
 
   async commandAddCallback(props: SlackCommandMiddlewareArgs & AllMiddlewareArgs) {
@@ -81,15 +81,15 @@ export class TodoCommandMiddleware {
     props.logger.debug(`TodoCommandMiddleware.addButtonActionCallback()`);
 
     const triggerID = (props.body as BlockAction).trigger_id;
-    await TodoAddModalShow(triggerID, TodoCommandMiddleware.ModalSubmissionID, props.client);
+    await TodoAddModalViewShow(triggerID, TodoCommandMiddleware.ModalSubmissionID, props.client);
   }
 
   async modalSubmissionCallback(props: SlackViewMiddlewareArgs<SlackViewAction> & AllMiddlewareArgs) {
     await props.ack();
 
     props.logger.debug(`TodoCommandMiddleware.modalSubmissionCallback()`);
-    const content = props.body.view.state.values[TodoAddModalTextInputBlockID][TodoAddModalTextInputActionID].value!;
-    await TodoAddModelSubmissionHelper(props.body.user.id, content, props.logger);
+    const content = props.body.view.state.values[TodoAddModalViewTextInputBlockID][TodoAddModalViewTextInputActionID].value!;
+    await TodoAddModelViewSubmissionHelper(props.body.user.id, content, props.logger);
   }
 
   async listCallback(props: SlackCommandMiddlewareArgs & AllMiddlewareArgs) {
