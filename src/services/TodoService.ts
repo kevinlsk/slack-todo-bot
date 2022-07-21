@@ -4,12 +4,12 @@ import shortUUID from "short-uuid";
 
 export interface TodoService {
   add(content: string): Promise<TodoResult>;
-  update(id: string, content: string): Promise<TodoResult>;
+  update(id: string, fragment: TodoItemFragment): Promise<TodoResult>;
   list(status: TodoItemStatus): Promise<TodoResult>;
   delete(id: string): Promise<TodoResult>;
 }
 
-export function TodoServiceCreate(user: string, logger: Logger) {
+export function TodoServiceCreate(user: string, logger: Logger): TodoService {
   return new PersistentTodoService(user, logger);
 }
 
@@ -38,7 +38,7 @@ export interface TodoResult {
   error?: string
 }
 
-class PersistentTodoService {
+class PersistentTodoService implements TodoService {
   private user: string;
   private logger: Logger;
   private dbService: DBService;
