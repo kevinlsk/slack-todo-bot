@@ -46,10 +46,9 @@
    ```
    GOOGLE_APPLICATION_CREDENTIALS=/Users/kevin/GitHub/slack-todo-bot/secrets/firebaseAccountKey.json
    ```
-
-   Reference:
-   - https://firebase.google.com/docs/firestore/quickstart
-   - https://firebase.google.com/docs/admin/setup#initialize-sdk
+Reference:
+- https://firebase.google.com/docs/firestore/quickstart
+- https://firebase.google.com/docs/admin/setup#initialize-sdk
 
 ### Finally
 1. Run the bot
@@ -60,7 +59,7 @@
 # How to use?
 You can use this slack bot with Slack commands in any channel or message. Supported Slack commands are:
 - /todo-i
-- /todo-add your_new_todo_content_goes_here
+- /todo-add SOME_NEW_TODO_CONTENT
 - /todo-list <all | open | done>
 - /todo-done TODO_ITEM_ID
 - /todo-delete TODO_ITEM_ID
